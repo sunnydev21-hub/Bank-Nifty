@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Bank Nifty Prediction</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 40px; }
+    .container { max-width:800px; margin:0 auto; }
+    h1 { text-align:center; }
+    table { width:100%; border-collapse:collapse; }
+    th, td { border:1px solid #ddd; padding:8px; }
+    th { background:#f2f2f2; text-align:left; }
+    input { width:100%; padding:6px; box-sizing:border-box; }
+    button { padding:6px 12px; background:#007BFF; color:#fff; border:none; cursor:pointer; }
+    button:hover { background:#0056b3; }
+    .result { background:#f8f9fa; }
+    .error  { color:red; font-size:90%; }
+    .clear-all { margin-top:15px; text-align:right; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Bank Nifty Prediction</h1>
+    <form method="post">
+      <table>
+        <tr>
+          <th>S.No</th>
+          <th>UPCRT</th>
+          <th>LWCRT</th>
+          <th>Open</th>
+          <th>Predict</th>
+          <th>High Result</th>
+          <th>Low Result</th>
+        </tr>
+        {% for i in range(1,11) %}
+        <tr>
+          <td>{{ i }}</td>
+          <td>
+            <input type="number" step="any" name="upcrt{{i}}"
+                   value="{{ form_data['upcrt'+i|string] }}">
+          </td>
+          <td>
+            <input type="number" step="any" name="lwcrt{{i}}"
+                   value="{{ form_data['lwcrt'+i|string] }}">
+          </td>
+          <td>
+            <input type="number" step="any" name="open{{i}}"
+                   value="{{ form_data['open'+i|string] }}">
+          </td>
+          <td>
+            <button type="submit" name="predict" value="{{i}}">
+              Predict
+            </button>
+          </td>
+          <td class="result">
+            {% if results_high[i] is not none %}
+              {{ '%.2f' % results_high[i] }}
+            {% endif %}
+          </td>
+          <td class="result">
+            {% if results_low[i] is not none %}
+              {{ '%.2f' % results_low[i] }}
+            {% endif %}
+          </td>
+        </tr>
+        <tr>
+          <td colspan="7" class="error">{{ errors[i] }}</td>
+        </tr>
+        {% endfor %}
+      </table>
+
+      <!-- carry forward existing results -->
+      {% for i in range(1,11) %}
+        {% if results_high[i] is not none %}
+          <input type="hidden"
+                 name="result_high{{i}}"
+                 value="{{'%.2f'%results_high[i]}}">
+        {% endif %}
+        {% if results_low[i] is not none %}
+          <input type="hidden"
+                 name="result_low{{i}}"
+                 value="{{'%.2f'%results_low[i]}}">
+        {% endif %}
+      {% endfor %}
+
+      <div class="clear-all">
+        <button type="submit" name="clear_all">
+          Clear All Results
+        </button>
+      </div>
+    </form>
+  </div>
+</body>
+</html>
